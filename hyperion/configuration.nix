@@ -74,6 +74,7 @@ in
     };
 
     fonts.packages = with pkgs; [
+        hasklig
         input-fonts
         monaspace
     ] ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues nerd-fonts);
