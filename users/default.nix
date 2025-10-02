@@ -20,9 +20,12 @@ in
     ];
 
     packages = pkgs: with pkgs; [
+      bitwarden-desktop
       coppwr
       pwvucontrol
       recordbox
+      unzip
+      zip
     ];
   };
 
@@ -50,6 +53,8 @@ in
       opencomposite
       pwvucontrol
       recordbox
+      unzip
+      zip
     ];
 
     nixosImports = [
