@@ -5,7 +5,7 @@
         backend = "glx";
         fade = true;
         fadeDelta = 2;
-        inactiveOpacity = 0.50;
+        inactiveOpacity = 1.00;
         settings = {
             blur = {
                 method = "gaussian";
@@ -20,7 +20,7 @@
                 "window_type = 'tooltip'"
                 "window_type = 'utility'"
             ];
-            corner-radius = 12;
+            corner-radius = 5;
             detect-rounded-corners = true;
             experimental-backends = false;
             frame-pacing = false;
