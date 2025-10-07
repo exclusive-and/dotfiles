@@ -1,17 +1,22 @@
 { config, pkgs, ... }:
 
 {
-    programs.vscode = {
-        enable = true;
-        enableExtensionUpdateCheck = true;
+  programs.vscode = {
+    enable = true;
+    package = pkgs.vscodium;
+    
+    profiles = {
+      default = {
         enableUpdateCheck = true;
-        package = pkgs.vscodium;
+        enableExtensionUpdateCheck = true;
         extensions = with pkgs.vscode-extensions; [
-            haskell.haskell
-            jnoortheen.nix-ide
-            llvm-vs-code-extensions.vscode-clangd
-            mkhl.direnv
-            mshr-h.veriloghdl
+          haskell.haskell
+          jnoortheen.nix-ide
+          llvm-vs-code-extensions.vscode-clangd
+          mkhl.direnv
+          mshr-h.veriloghdl
         ];
+      };
     };
+  };
 }
