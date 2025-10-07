@@ -83,35 +83,36 @@ keyCommandMap conf =
   in
     Map.fromList $ concat
       [
-        [((modMask, xK_h), sendMessage Shrink)] -- %! Shrink the master area
-      , [((modMask, xK_j), windows StackSet.focusDown)] -- %! Move focus to the next window
-      , [((modMask, xK_k), windows StackSet.focusUp)] -- %! Move focus to the previous window
-      , [((modMask, xK_l), sendMessage Expand)] -- %! Expand the master area
-      , [((modMask, xK_m), windows StackSet.focusMaster)] -- %! Move focus to the master window
-      , [((modMask, xK_n), refresh)] -- %! Resize viewed windows to the correct size
-      , [((modMask, xK_t), withFocused $ windows . StackSet.sink)] -- %! Push window back into tiling
+        [((modMask, xK_h), sendMessage Shrink)]
+      , [((modMask, xK_j), windows StackSet.focusDown)]
+      , [((modMask, xK_k), windows StackSet.focusUp)]
+      , [((modMask, xK_l), sendMessage Expand)]
+      , [((modMask, xK_m), windows StackSet.focusMaster)]
+      , [((modMask, xK_n), refresh)]
+      , [((modMask, xK_t), withFocused $ windows . StackSet.sink)]
 
       , [
           ((modMask, key), windows $ StackSet.greedyView view)
             | (key, view) <- zip [xK_1 .. xK_9] workspaces
         ]
 
-      , [((modMask, xK_comma), sendMessage (IncMasterN 1))] -- %! Increment the number of windows in the master area
-      , [((modMask, xK_grave), spawn terminal)] -- %! Launch terminal
-      , [((modMask, xK_period), sendMessage (IncMasterN (-1)))] -- %! Deincrement the number of windows in the master area
-      , [((modMask, xK_space), sendMessage NextLayout)] -- %! Rotate through the available layout algorithms
-      , [((modMask, xK_Escape), XMonad.io exitSuccess)] -- %! Quit xmonad
-      , [((modMask, xK_Return), spawn appLauncher)] -- %! Launch dmenu
+      , [((modMask, xK_comma), sendMessage (IncMasterN 1))]
+      , [((modMask, xK_grave), spawn terminal)]
+      , [((modMask, xK_period), sendMessage (IncMasterN (-1)))]
+      , [((modMask, xK_space), sendMessage NextLayout)]
+      , [((modMask, xK_Return), spawn appLauncher)]
       , [((modMask, xK_Tab), spawn appList)]
 
-      , [((modMask .|. shiftMask, xK_c), kill)] -- %! Close the focused window
-      , [((modMask .|. shiftMask, xK_j), windows StackSet.swapDown)] -- %! Swap the focused window with the next window
-      , [((modMask .|. shiftMask, xK_k), windows StackSet.swapUp)] -- %! Swap the focused window with the previous window
+      , [((modMask .|. shiftMask, xK_c), kill)]
+      , [((modMask .|. shiftMask, xK_j), windows StackSet.swapDown)]
+      , [((modMask .|. shiftMask, xK_k), windows StackSet.swapUp)]
 
       , [
           ((modMask .|. shiftMask, key), windows $ StackSet.shift view)
             | (key, view) <- zip [xK_1 .. xK_9] workspaces
         ]
 
-      , [((modMask .|. shiftMask, xK_space), setLayout layoutHook)] -- %!  Reset the layouts on the current workspace to default
+      , [((modMask .|. shiftMask, xK_space), setLayout layoutHook)]
+      
+      , [((modMask .|. shiftMask, xK_Escape), XMonad.io exitSuccess)]
       ]
