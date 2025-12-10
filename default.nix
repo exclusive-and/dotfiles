@@ -1,18 +1,15 @@
 let
   sources = import ./nix/sources.nix;
 in
-
 {
-  nixpkgs ? sources.nixpkgs,
   system ? builtins.currentSystem,
   
+  ragenix ? null,
+  nixpkgs ? sources.nixpkgs,
   nurpkgs ? sources.nurpkgs,
-
   home-manager ? sources.home-manager,
-
   ...
 }:
-
 let
   nixosSystem = args:
     if nixpkgs ? lib then
@@ -67,6 +64,7 @@ in
     inherit pkgs;
 
     modules = with users; [
+      ragenix.nixosModules.default
       gaming.nixosModules.default
       hyperion.nixosModules.default
       xand.nixosModules.default

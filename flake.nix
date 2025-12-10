@@ -1,7 +1,7 @@
 {
   description = "hyperion OS configuration";
 
-  inputs.nixpkgs.url = "nixpkgs/nixos-25.05";
+  inputs.nixpkgs.url = "nixpkgs/nixos-25.11";
 
   outputs = {self, nixpkgs}:
     import ./. {

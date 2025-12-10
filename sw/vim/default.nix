@@ -24,7 +24,7 @@ let
         customRC = builtins.readFile ./vimrc;
     };
 
-    vim = pkgs.vim_configurable.customize {
+    vim = pkgs.vim-full.customize {
         name = "vim";
         inherit vimrcConfig;
     };
