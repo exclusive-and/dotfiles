@@ -4,7 +4,7 @@ in
 {
   system ? builtins.currentSystem,
   
-  ragenix ? null,
+  ragenix,
   nixpkgs ? sources.nixpkgs,
   nurpkgs ? sources.nurpkgs,
   home-manager ? sources.home-manager,

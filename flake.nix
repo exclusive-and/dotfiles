@@ -3,9 +3,14 @@
 
   inputs.nixpkgs.url = "nixpkgs/nixos-25.11";
 
-  outputs = {self, nixpkgs}:
+  inputs.ragenix = {
+    url = "github:yaxitech/ragenix";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
+  outputs = {self, nixpkgs, ragenix}:
     import ./. {
-      inherit nixpkgs;
+      inherit nixpkgs ragenix;
       system = "x86_64-linux";
     };
 }
