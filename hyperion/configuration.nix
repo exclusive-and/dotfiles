@@ -195,7 +195,7 @@ in
             '';
 
             screenSection = ''
-                Option "metamodes" "1920x1080_144 +0+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}"
+                Option "metamodes" "3840x2160_240 +0+0 {ForceCompositionPipeline=On, ForceFullCompositionPipeline=On}"
             '';
 
             serverLayoutSection = ''
