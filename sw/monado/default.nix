@@ -10,7 +10,6 @@
         defaultRuntime = true;
         highPriority = true;
 
-        /*
         package = pkgs.monado.overrideAttrs (old: {
             version = "latest";
 
@@ -18,13 +17,16 @@
                 domain = "gitlab.freedesktop.org";
                 owner = "monado";
                 repo = "monado";
-                rev = "c80de9e7cacf2bf9579f8ae8c621d8bf16e85d6c";
-                hash = "sha256-ciH26Hyr8FumB2rQB5sFcXqtcQ1R84XOlphkkLBjzvA=";
+                rev = "0d39a0c50904ac81add836ca97aca08c766db316";
+                hash = "sha256-sKdOGDv54X6J1HYIAr2GhqlNoByEUqFcX1dLAiERkS0=";
             };
 
             patches = [];
+
+            cmakeFlags = old.cmakeFlags ++ [
+                (pkgs.lib.cmakeBool "XRT_BUILD_DRIVER_SURVIVE" true)
+            ];
         });
-        */
     };
 
     systemd.user.services.monado.environment = {

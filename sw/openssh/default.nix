@@ -3,6 +3,10 @@
         enable = true;
 
         listenAddresses = [
+             {
+                addr = "10.0.0.2";
+                port = 22;
+            }
             {
                 addr = "192.168.2.20";
                 port = 22;

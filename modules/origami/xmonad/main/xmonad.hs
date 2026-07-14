@@ -1,9 +1,20 @@
+{-# Language DisambiguateRecordFields #-}
+{-# Language ImportQualifiedPost #-}
+{-# Language NamedFieldPuns #-}
+{-# Language NoImplicitPrelude #-}
+{-# Language NoStarIsType #-}
+{-# Language RankNTypes #-}
+{-# Language ScopedTypeVariables #-}
+{-# Language TupleSections #-}
+{-# Language TypeApplications #-}
+
 module Main where
+
+import Prelude
 
 import Data.Default
 import Data.Map (Map)
 import Data.Map qualified as Map
-import Prelude
 import System.Exit
 
 import XMonad
@@ -12,11 +23,16 @@ import XMonad.Hooks.EwmhDesktops
   , ewmhFullscreen
   )
 import XMonad.Hooks.ManageDocks
-import XMonad.Layout.Fullscreen
+import XMonad.Layout qualified
+import XMonad.Layout.Accordion qualified
+import XMonad.Layout.Dishes qualified
+import XMonad.Layout.Drawer qualified
+import XMonad.Layout.Fullscreen qualified
 import XMonad.Layout.Gaps
 import XMonad.Layout.Grid
 import XMonad.Layout.NoBorders
 import XMonad.Layout.Spacing
+import XMonad.Layout.Tabbed qualified
 import XMonad.Operations
   ( kill
   , refresh
@@ -29,34 +45,38 @@ import XMonad.StackSet qualified as StackSet
 import XMonad.Util.SpawnOnce (spawnOnce)
 
 main :: IO ()
-main = xmonad $ ewmhFullscreen $ ewmh $ configuration
-  where
-    configuration = def {
-        startupHook
+main =
+  let
+    layout =
+          XMonad.Layout.Full
+      ||| XMonad.Layout.Tall 1 (3 / 100) (5 / 8)
+
+    modifiers =
+        avoidStruts
+      . lessBorders OnlyScreenFloat
+      . gaps [(L, 5), (R, 5), (U, 10), (D, 10)]
+      . smartSpacing 2
+  in
+    xmonad $ ewmhFullscreen $ ewmh $ def
+      { XMonad.startupHook = Main.startupHook
         -- Keybinds.
-      , keys
-      , modMask = mod4Mask
-      , terminal = "alacritty"
+      , XMonad.keys = Main.keys
+      , XMonad.modMask = mod4Mask
+      , XMonad.terminal = "alacritty"
         -- Window properties and layout.
-      , focusedBorderColor = "#e03f3f"
-      , normalBorderColor  = "#44b88d"
-      , borderWidth = 2
-      , layoutHook = modifiers layout
+      , XMonad.focusedBorderColor = "#e03f3f"
+      , XMonad.normalBorderColor  = "#44b88d"
+      , XMonad.borderWidth = 2
+      , XMonad.layoutHook = modifiers layout
         -- Mouse behaviour.
-      , clickJustFocuses = True
-      , focusFollowsMouse = True
+      , XMonad.clickJustFocuses = True
+      , XMonad.focusFollowsMouse = True
       }
-
-    layout = Tall 1 (3 / 100) (5 / 8) ||| Full
-
-    modifiers = avoidStruts
-              . gaps [(L, 5), (R, 5), (U, 10), (D, 10)]
-              . smartSpacing 2
 
 startupHook :: X ()
 startupHook = do
   spawn "xsetroot -cursor_name left_ptr"
-  spawnOnce "feh --bg-scale $HOME/wallpapers/school-sunset.png"
+  spawnOnce "feh --bg-scale $HOME/wallpapers/mirrors-edge.png"
 
 keys :: XConfig Layout -> Map (ButtonMask, KeySym) (X ())
 keys XConfig{modMask, layoutHook, terminal, workspaces} =

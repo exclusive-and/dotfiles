@@ -1,0 +1,74 @@
+{
+    "agenix": {
+        "branch": "main",
+        "description": "age-encrypted secrets for NixOS and Home manager",
+        "homepage": "https://matrix.to/#/#agenix:nixos.org",
+        "owner": "ryantm",
+        "repo": "agenix",
+        "rev": "b027ee29d959fda4b60b57566d64c98a202e0feb",
+        "sha256": "1wlpvpj45qfixdzhmk2cgiwlkyaf8a5mjy2jp5lsx2wsxblclngm",
+        "type": "tarball",
+        "url": "https://github.com/ryantm/agenix/archive/b027ee29d959fda4b60b57566d64c98a202e0feb.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "home-manager": {
+        "branch": "release-25.11",
+        "description": "Manage a user environment using Nix  [maintainer=@khaneliman, @rycee] ",
+        "homepage": "https://nix-community.github.io/home-manager/",
+        "owner": "nix-community",
+        "repo": "home-manager",
+        "rev": "0999ed8f965bbbd991437ad9c5ed3434cecbc30e",
+        "sha256": "1rzgy9qmrvh9l3jrcjv14kva8sj3imzrpm2vmwcfzp40bk9wdfb5",
+        "type": "tarball",
+        "url": "https://github.com/nix-community/home-manager/archive/0999ed8f965bbbd991437ad9c5ed3434cecbc30e.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs": {
+        "branch": "nixos-25.11",
+        "description": "Nix Packages collection",
+        "homepage": null,
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "76701a179d3a98b07653e2b0409847499b2a07d3",
+        "sha256": "1nj2z9jy99zzqr7mmclr99gh71b26njh66hssmqm1flgxl64svg4",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixpkgs/archive/76701a179d3a98b07653e2b0409847499b2a07d3.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs-unstable": {
+        "branch": "nixpkgs-unstable",
+        "description": "Nix Packages collection & NixOS",
+        "homepage": "",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "a3db02183b5da6fbf728203492a5d1b9d109b7f9",
+        "sha256": "1x3ggfdf7an49f5nq44snsz5ghgmsaislkc9q52vjxim28nd49c0",
+        "type": "tarball",
+        "url": "https://github.com/nixos/nixpkgs/archive/a3db02183b5da6fbf728203492a5d1b9d109b7f9.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nurpkgs": {
+        "branch": "main",
+        "description": "Nix User Repository: User contributed nix packages [maintainer=@Pandapip1]",
+        "homepage": "https://nur.nix-community.org/",
+        "owner": "nix-community",
+        "repo": "NUR",
+        "rev": "482fe15e26e061de025e354073d8edae6728397f",
+        "sha256": "1kklqzr8z914wisp0449r301d5c3i3k8qmk6x1b6l78jhs5h42rw",
+        "type": "tarball",
+        "url": "https://github.com/nix-community/NUR/archive/482fe15e26e061de025e354073d8edae6728397f.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "ragenix": {
+        "branch": "main",
+        "description": "age-encrypted secrets for NixOS; drop-in replacement for agenix",
+        "homepage": "",
+        "owner": "yaxitech",
+        "repo": "ragenix",
+        "rev": "83bccfdea758241999f32869fb6b36f7ac72f1ac",
+        "sha256": "0lrhfibfwxkaqjlp2ad22xlqh0h46w8slc46i67v5gli7f75a8sl",
+        "type": "tarball",
+        "url": "https://github.com/yaxitech/ragenix/archive/83bccfdea758241999f32869fb6b36f7ac72f1ac.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    }
+}

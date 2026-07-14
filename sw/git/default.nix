@@ -8,7 +8,8 @@
             "dist-newstyle/"
             "obj_dir/"
         ];
-        userEmail = "exclusiveandgate@gmail.com";
-        userName = "exclusive-and";
+        settings.user.email = "exclusiveandgate@gmail.com";
+        settings.user.name = "exclusive-and";
+        signing.format = "openpgp";
     };
 }
