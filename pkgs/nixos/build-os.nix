@@ -8,7 +8,7 @@
 
 let
 
-  ospkgs = import ./bootstrap.nix {
+  buildNixosPackages = import ./make-package-set.nix {
     inherit inputs lib nixosSystem;
   };
 
@@ -25,7 +25,7 @@ let
           (lib.functionArgs f)
           (lib.removeAttrs args ["targets"]);
     in
-      f (finalArgs // { inherit ospkgs; });
+      f (finalArgs // { inherit buildNixosPackages; });
 
 in
   lib.foldl'

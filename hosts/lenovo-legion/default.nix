@@ -1,12 +1,12 @@
 {
-  ospkgs
+  buildNixosPackages
 , keys
 , secrets
 , origami
 }:
 
 let
-  inherit (ospkgs) callNixosConfiguration;
+  inherit (buildNixosPackages) callNixosConfiguration;
 in
 {
   nixosConfigurations.lenovo-legion = callNixosConfiguration ./nixos-configuration.nix {

@@ -1,12 +1,12 @@
 {
-  ospkgs
+  buildNixosPackages
 , keys
 , secrets
 , origami
 }:
 
 let
-  inherit (ospkgs) callNixosConfiguration;
+  inherit (buildNixosPackages) callNixosConfiguration;
 in
 {
   nixosConfigurations.hyperion = callNixosConfiguration ./nixos-configuration.nix {
