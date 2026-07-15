@@ -25,6 +25,11 @@
 
   inputs.nix-monitored.url = "github:ners/nix-monitored";
 
+  inputs.nixos-hardware = {
+    url = "github:nixos/nixos-hardware";
+    inputs.nixpkgs.follows = "nixpkgs";
+  };
+
   # Grab the nixpkgs-unstable branch in case we need more up-to-date versions of packages
   # that haven't been incorporated into a stable release yet.
   inputs.nixpkgs-unstable.url = "github:nixos/nixpkgs/nixpkgs-unstable";
@@ -36,6 +41,7 @@
 
     targets = [
       ./hosts/hyperion
+      ./hosts/lenovo-legion
       # ./hosts/lemur-pro
     ];
 

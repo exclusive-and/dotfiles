@@ -17,7 +17,13 @@ let
 
   bootstrapNixosPackages = final: prev: {
     inherit nixosSystem;
-    inherit (inputs) home-manager nix-auth nix-monitored nurpkgs ragenix;
+    inherit (inputs)
+      home-manager
+      nix-auth
+      nix-monitored
+      nixos-hardware
+      nurpkgs
+      ragenix;
   };
 
   splice =
