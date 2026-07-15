@@ -21,6 +21,8 @@
   ];
 
   environment.systemPackages = [
+    pkgs.acpi
+    pkgs.btop
     pkgs.lshw
     pkgs.ragenix
     pkgs.rsync
@@ -98,6 +100,7 @@
 
   security.polkit.enable = true;
 
+  services.acpid.enable = true;
   services.dbus.enable = true;
   services.xserver.verbose = 7;
   services.xserver.videoDrivers = [ "nvidia" ];
