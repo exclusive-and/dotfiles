@@ -21,10 +21,6 @@ nixosSystem {
     origami
     ragenix.nixosModules.default
     {
-      age.identityPaths = keys.private;
-      age.secrets = (import secrets { inherit lib; }).hyperion;
-    }
-    {
       home-manager.extraSpecialArgs = {
         inherit nurpkgs;
       };
