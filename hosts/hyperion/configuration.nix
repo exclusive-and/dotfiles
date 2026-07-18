@@ -100,6 +100,10 @@
 
   security.polkit.enable = true;
 
+  security.sudo.enable = true;
+  security.sudo.execWheelOnly = true;
+  security.sudo.wheelNeedsPassword = false;
+
   services.acpid.enable = true;
   services.dbus.enable = true;
   services.xserver.verbose = 7;
