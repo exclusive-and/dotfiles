@@ -31,7 +31,7 @@ nixosSystem {
 
     # Hardware
     nixos-hardware.nixosModules.common-cpu-amd
-    nixos-hardware.nixosModules.common-gpu-nvidia
+    nixos-hardware.nixosModules.common-gpu-nvidia-nonprime
 
     # Hardware: install some additional AMD-specific CPU
     # power management kernel modules.
