@@ -44,7 +44,7 @@
       #openblas = prev.openblas.overrideAttrs {
       #  doCheck = false;
       #};
-      vim = prev.callPackage ../../pkgs/vim/vimrc.nix {};
+      custom-vimrc = prev.callPackage ../../pkgs/vim/vimrc.nix {};
     })
   ];
 

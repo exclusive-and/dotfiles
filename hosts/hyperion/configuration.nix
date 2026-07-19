@@ -36,11 +36,11 @@
   environment.systemPackages = [
     pkgs.acpi
     pkgs.btop
+    pkgs.custom-vimrc
     pkgs.lshw
     pkgs.ragenix
     pkgs.rsync
     pkgs.unzip
-    pkgs.vim
     pkgs.zip
   ];
 
