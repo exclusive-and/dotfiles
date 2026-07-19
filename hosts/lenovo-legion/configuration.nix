@@ -9,8 +9,14 @@
     ./locale.nix
     ./nixpkgs.nix
 
-    ../../sw/steam
-    ../../sw/vim
+    ../../modules/nixos/alacritty.nix
+    ../../modules/nixos/audio.nix
+    ../../modules/nixos/graphical/picom.nix
+    ../../modules/nixos/graphical/rofi.nix
+    ../../modules/nixos/graphical/xmonad-session.nix
+    ../../modules/nixos/greet.nix
+    ../../modules/nixos/steam.nix
+    ../../modules/nixos/users.nix
   ];
 
   environment.systemPackages = [
@@ -20,6 +26,7 @@
     pkgs.ragenix
     pkgs.rsync
     pkgs.unzip
+    pkgs.vim
     pkgs.zip
   ];
 
@@ -39,16 +46,18 @@
 
   hardware.graphics.enable = true;
 
-  hardware.nvidia.modesetting.enable = false;
+  hardware.nvidia.modesetting.enable = true;
   hardware.nvidia.nvidiaSettings = true;
   hardware.nvidia.open = true;
-  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.beta;
-  hardware.nvidia.powerManagement.enable = false;
+  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+  hardware.nvidia.powerManagement.enable = true;
   hardware.nvidia.powerManagement.finegrained = false;
   hardware.nvidia.prime = {
     intelBusId = "PCI:00:02:0";
     nvidiaBusId = "PCI:02:00:0";
   };
+
+  home-manager.useGlobalPkgs = true;
 
   home-manager.users."xand" = {
     imports = [
@@ -81,8 +90,16 @@
 
   security.polkit.enable = true;
 
+  security.sudo.enable = true;
+  security.sudo.execWheelOnly = true;
+  security.sudo.wheelNeedsPassword = false;
+
   services.acpid.enable = true;
+  # services.auto-cpufreq.enable = true;
   services.dbus.enable = true;
+  services.power-profiles-daemon.enable = lib.mkForce false;
+  services.thermald.enable = lib.mkForce false;
+  services.tlp.enable = true;
   services.xserver.verbose = 7;
 
   # See https://nixos.org/nixos/options.html.

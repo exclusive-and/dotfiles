@@ -41,9 +41,10 @@
   
   nixpkgs.overlays = [
     (final: prev: {
-      openblas = prev.openblas.overrideAttrs {
-        doCheck = false;
-      };
+      #openblas = prev.openblas.overrideAttrs {
+      #  doCheck = false;
+      #};
+      vim = prev.callPackage ../../pkgs/vim/vimrc.nix {};
     })
   ];
 

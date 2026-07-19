@@ -1,17 +1,12 @@
-{ config, pkgs, nurpkgs, ... }:
-let
-  nur = import nurpkgs {
-    nurpkgs = pkgs;
-    inherit pkgs;
-  };
-in
+{ config, pkgs, ... }:
+
 {
   programs.firefox.enable = true;
   programs.firefox.package = pkgs.firefox;
   programs.firefox.profiles.default = {
     id = 0;
     extensions = {
-      packages = with nur.repos.rycee.firefox-addons; [
+      packages = with pkgs.nur.repos.rycee.firefox-addons; [
         dashlane
         toggl-button-time-tracker
         ublock-origin

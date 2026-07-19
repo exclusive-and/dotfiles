@@ -41,9 +41,9 @@
   
   nixpkgs.overlays = [
     (final: prev: {
-      openblas = prev.openblas.overrideAttrs {
-        doCheck = false;
-      };
+      #openblas = prev.openblas.overrideAttrs {
+      #  doCheck = false;
+      #};
     })
   ];
 

@@ -1,12 +1,11 @@
-{
-  config
-, lib
-, pkgs
-, ...
-}:
+{ config, lib, pkgs, ... }:
+
 let
+  
   cfg = config.origami.xmonad;
+
   forEachUser = lib.genAttrs cfg.users;
+
 in
 {
   options.origami = {
@@ -21,7 +20,7 @@ in
       source = lib.mkOption {
         description = "The Haskell source file for XMonad to use.";
         type = lib.types.path;
-        default = ./main/xmonad.hs;
+        default = ./xmonad.hs;
       };
 
       users = lib.mkOption {
@@ -62,12 +61,18 @@ in
         enable = true;
         config = cfg.source;
 
-        extraPackages = haskellPackages: with haskellPackages; [
-          containers
-          dbus
-          xmonad-contrib
-          xmonad-extras
-        ];
+        extraPackages =
+          haskellPackages:
+          let
+            xmonadrc = haskellPackages.callPackage ./xmonadrc.nix {};
+          in
+          [
+            haskellPackages.containers
+            haskellPackages.data-default
+            haskellPackages.xmonad-contrib
+            haskellPackages.xmonad-extras
+            xmonadrc
+          ];
       };
 
       home.sessionVariables = {

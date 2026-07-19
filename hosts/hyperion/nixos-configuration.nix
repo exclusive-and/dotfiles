@@ -1,39 +1,46 @@
-{ lib
-, nixosSystem
-
-, keys
-, secrets
+{
+  nixosSystem
+, lib
 
 , home-manager
 , nix-auth
 , nix-monitored
+, nixos-hardware
 , nurpkgs
-, origami
 , ragenix
 }:
 
 nixosSystem {
   modules = [
-    home-manager.nixosModules.default
-    nix-monitored.nixosModules.default
-    origami
-    ragenix.nixosModules.default
-    {
-      age.identityPaths = keys.private;
-      age.secrets = (import secrets { inherit lib; }).hyperion;
-    }
-    {
-      home-manager.extraSpecialArgs = {
-        inherit nurpkgs;
-      };
-    }
+    # Add some packages to `nixpkgs`.
     {
       nixpkgs.overlays = [
+        nurpkgs.overlays.default
+
         (final: prev: {
           nix-auth = nix-auth.packages.${final.stdenv.hostPlatform.system}.default;
         })
       ];
     }
+
+    # Install `home-manager`.
+    home-manager.nixosModules.default
+
+    # Security: install `ragenix` for secret management.
+    ragenix.nixosModules.default
+
+    # Hardware
+    nixos-hardware.nixosModules.common-cpu-amd
+    nixos-hardware.nixosModules.common-gpu-nvidia
+
+    # Hardware: install some additional AMD-specific CPU
+    # power management kernel modules.
+    nixos-hardware.nixosModules.common-cpu-amd-pstate
+    nixos-hardware.nixosModules.common-cpu-amd-zenpower
+
     ./configuration.nix
+
+    # NOM: replace stock Nix executables with `nix-monitored`.
+    nix-monitored.nixosModules.default
   ];
 }

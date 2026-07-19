@@ -11,14 +11,27 @@
     ./nixpkgs.nix
     ./wireguard.nix
 
+    ../../modules/nixos/alacritty.nix
+    ../../modules/nixos/audio.nix
+    ../../modules/nixos/graphical/picom.nix
+    ../../modules/nixos/graphical/rofi.nix
+    ../../modules/nixos/graphical/xmonad-session.nix
+    ../../modules/nixos/greet.nix
+    ../../modules/nixos/steam.nix
+    ../../modules/nixos/users.nix
+
     ../../sw/forgejo
     ../../sw/monado
     ../../sw/nginx
     ../../sw/slack
-    ../../sw/steam
-    ../../sw/vim
     ../../webhosts/coraless
   ];
+
+  age.identityPaths = [
+    "/root/.ssh/id_ed25519_hyperion_secrets"
+  ];
+
+  age.secrets = (import ../../secrets { inherit lib; }).hyperion;
 
   environment.systemPackages = [
     pkgs.acpi
@@ -27,6 +40,7 @@
     pkgs.ragenix
     pkgs.rsync
     pkgs.unzip
+    pkgs.vim
     pkgs.zip
   ];
 
@@ -53,7 +67,7 @@
   hardware.nvidia.powerManagement.enable = false;
   hardware.nvidia.powerManagement.finegrained = false;
 
-#  home-manager.useGlobalPkgs = true;
+  home-manager.useGlobalPkgs = true;
 #  home-manager.useUserPackages = true;
 
   home-manager.users."xand" = {

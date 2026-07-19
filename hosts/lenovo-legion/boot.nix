@@ -4,6 +4,7 @@
   # Kernel
   boot.kernelPackages = pkgs.linuxKernel.packages.linux_7_1;
   boot.kernelParams = [
+    "acpi_backlight=vendor"
     "nvidia-drm.fbdev=1"
     "nvidia-drm.modeset=1"
   ];
