@@ -30,7 +30,8 @@ let
   lockFile = builtins.fromJSON (builtins.readFile lockFilePath);
 
   # Compute the key corresponding to an input spec.
-  resolveInput = inputSpec:
+  resolveInput =
+    inputSpec:
     if !(builtins.isList inputSpec) then
       inputSpec
     else
@@ -44,7 +45,8 @@ let
   # ```
   #
   # returns the key corresponding to the node for `inputs.dwarffs.inputs.nixpkgs`.
-  getInputByPath = key: path:
+  getInputByPath =
+    key: path:
     if path == [] then
       key
     else
@@ -52,14 +54,16 @@ let
         (resolveInput lockFile.nodes.${key}.inputs.${builtins.head path})
         (builtins.tail path);
 
-  isLockedNodeRelative = node:
+  isLockedNodeRelative =
+    node:
     if node.locked.type or null == "path" then
       assert node.locked ? path;
       builtins.substring 0 1 node.locked.path != "/"
     else
       false;
 
-  getParentNode = node:
+  getParentNode =
+    node:
     allNodes.${getInputByPath lockFile.root node.parent};
 
   rootTreeFromPathish =
@@ -124,7 +128,8 @@ let
 
   # `allNodes` is the real star of the show: it maps lockfile keys to the evaluations
   # of their respective nodes.
-  allNodes = builtins.mapAttrs (key: node:
+  allNodes = builtins.mapAttrs (
+    key: node:
     let
       hasOverride = overrides ? ${key};
       isRelative = isLockedNodeRelative node;
