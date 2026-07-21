@@ -8,6 +8,7 @@
     ./hardware-configuration.nix
     ./locale.nix
     ./nixpkgs.nix
+    ./power.nix
 
     ../../modules/nixos/alacritty.nix
     ../../modules/nixos/audio.nix
@@ -20,8 +21,6 @@
   ];
 
   environment.systemPackages = [
-    pkgs.acpi
-    pkgs.btop
     pkgs.lshw
     pkgs.ragenix
     pkgs.rsync
@@ -45,6 +44,8 @@
   ] ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues nerd-fonts);
 
   hardware.graphics.enable = true;
+
+  hardware.intel-gpu-tools.enable = true;
 
   hardware.nvidia.modesetting.enable = true;
   hardware.nvidia.nvidiaSettings = true;
@@ -94,12 +95,7 @@
   security.sudo.execWheelOnly = true;
   security.sudo.wheelNeedsPassword = false;
 
-  services.acpid.enable = true;
-  # services.auto-cpufreq.enable = true;
   services.dbus.enable = true;
-  services.power-profiles-daemon.enable = lib.mkForce false;
-  services.thermald.enable = lib.mkForce false;
-  services.tlp.enable = true;
   services.xserver.verbose = 7;
 
   # See https://nixos.org/nixos/options.html.
