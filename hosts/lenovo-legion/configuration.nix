@@ -21,6 +21,8 @@
   ];
 
   environment.systemPackages = [
+    pkgs.custom-slack
+    pkgs.custom-vimrc
     pkgs.lshw
     pkgs.ragenix
     pkgs.rsync

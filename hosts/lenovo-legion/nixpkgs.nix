@@ -44,6 +44,9 @@
       #openblas = prev.openblas.overrideAttrs {
       #  doCheck = false;
       #};
+
+      custom-slack = prev.callPackage ../../pkgs/slack/slack.nix {};
+      custom-vimrc = prev.callPackage ../../pkgs/vim/vimrc.nix {};
     })
   ];
 
