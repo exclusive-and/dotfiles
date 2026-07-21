@@ -36,6 +36,7 @@
   environment.systemPackages = [
     pkgs.acpi
     pkgs.btop
+    pkgs.custom-slack
     pkgs.custom-vimrc
     pkgs.lshw
     pkgs.ragenix
