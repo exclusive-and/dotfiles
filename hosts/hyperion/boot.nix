@@ -1,23 +1,58 @@
 { config, lib, pkgs, ... }:
 
 {
-  # Kernel
-  boot.kernelPackages = pkgs.linuxKernel.packages.linux_7_1;
-  boot.kernelParams = [];
-  
-  # Bootloader: systemd-boot
+  # Bootloader
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.systemd-boot = {
     enable = true;
     consoleMode = "max";
+
+    # No kernel command-line editor in the bootloader.
+    editor = false;
   };
 
+  # Kernel: stage 1 initramdisk
+  boot.initrd = {
+    availableKernelModules = [
+      "nvme"
+      "xhci_pci"
+    ];
+    compressor = "zstd";
+    kernelModules = [ ];
+
+    includeDefaultModules = false;
+
+    enable = true;
+    systemd.enable = true;
+    systemd.dbus.enable = false;
+  };
+
+  # Kernel
+  boot.kernelModules = [
+    "k10temp"
+    "nvme"
+    "xhci_pci"
+  ];
+  boot.kernelPackages = pkgs.linuxKernel.packages.linux_7_2;
+  boot.kernelParams = [
+    "driver_async_probe=*"
+    "initcall_blacklist=tpm_tis_init"
+    "modprobe.blacklist=tpm_tis,tpm_crb,tpm"
+    "nvidia_drm.fbdev=1"
+    "nvidia_drm.modeset=1"
+    "nvme_core.default_ps_max_latency_us=0"
+    "rootdelay=0"
+    "8250.nr_uarts=0"
+  ];
+
+  boot.kernel.sysctl = {
+    "vm.max_map_count" = 2147483642;
+  };
+
+  # Kernel: initial console setup
   console.enable = true;
   console.font = "Lat2-Terminus16";
   console.keyMap = "us";
-
-  # Kernel: kernel modules
-  boot.kernelModules = [ ];
 
   # Kernel: computer hostname
   networking.hostName = "hyperion";
