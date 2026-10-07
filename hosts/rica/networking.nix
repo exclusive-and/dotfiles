@@ -59,11 +59,6 @@
     };
   };
 
-  networking.networkmanager = {
-    enable = true;
-    unmanaged = [ "wg0" ];
-  };
-
   programs.ssh.startAgent = true;
 
   services.openssh = {
