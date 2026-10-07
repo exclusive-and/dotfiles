@@ -8,22 +8,16 @@
     ./networking.nix
     ./nixpkgs.nix
     ./peripherals.nix
-
-    ../../modules/nixos/alacritty.nix
+    ../../modules/applications/alacritty.nix
+    ../../modules/applications/steam.nix
     ../../modules/nixos/audio.nix
     ../../modules/nixos/graphical/niri-session.nix
     ../../modules/nixos/graphical/picom.nix
     ../../modules/nixos/graphical/rofi.nix
+    ../../modules/nixos/graphical/vr-monado.nix
     ../../modules/nixos/graphical/xmonad-session.nix
     ../../modules/nixos/greet.nix
-    ../../modules/nixos/steam.nix
     ../../modules/nixos/users.nix
-
-    ../../sw/forgejo
-    ../../sw/monado
-    ../../sw/nginx
-    ../../sw/slack
-    ../../webhosts/coraless
   ];
 
   age.secrets = {
