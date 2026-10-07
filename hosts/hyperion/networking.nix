@@ -41,7 +41,7 @@
           dynamicEndpointRefreshSeconds = 20;
         }
       ];
-      privateKeyFile = config.age.secrets."wireguard.privatekey".path;
+      privateKeyFile = config.age.secrets."key_wg0".path;
     };
   };
 

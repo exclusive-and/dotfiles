@@ -21,7 +21,7 @@
   ];
 
   age.secrets = {
-    "wireguard.privatekey".file = ./wireguard.privatekey.age;
+    "key_wg0".file = ./secrets/key_wg0.age;
   };
 
   environment.systemPackages = [
