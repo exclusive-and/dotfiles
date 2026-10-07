@@ -26,11 +26,16 @@
 
   # Kernel: kernel modules
   boot.blacklistedKernelModules = ["snd_soc_avs"];
-  boot.kernelModules = [ ];
+  boot.kernelModules = [
+    "acpi_call"
+  ];
   boot.extraModprobeConfig = ''
     options snd-hda-intel model=auto
   '';
 
-  # Kernel: computer hostname
-  networking.hostName = "lenovo-legion";
+  boot.extraModulePackages = [
+    config.boot.kernelPackages.acpi_call
+  ];
+
+  services.fwupd.enable = true;
 }

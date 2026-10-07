@@ -71,6 +71,26 @@
       system = "x86_64-linux";
     };
     
+    nixosConfigurations.lenovo-legion = nixosSystem {
+      modules = [
+        home-manager.nixosModules.default
+        {
+          nixpkgs.overlays = [
+            (final: prev: {
+              nix-auth = nix-auth.packages.${final.stdenv.hostPlatform.system}.default;
+            })
+            nurpkgs.overlays.default
+          ];
+        }
+        nix-monitored.nixosModules.default
+        nixos-hardware.nixosModules.common-cpu-intel
+        nixos-hardware.nixosModules.common-gpu-nvidia
+        nixos-hardware.nixosModules.lenovo-legion-16iax10h
+        ragenix.nixosModules.default
+        ./hosts/lenovo-legion/configuration.nix
+      ];
+    };
+
     nixosConfigurations.hyperion = nixosSystem {
       modules = [
         home-manager.nixosModules.default

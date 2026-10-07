@@ -2,23 +2,30 @@
 
 {
   imports = [
-    ./audio.nix
     ./boot.nix
-    ./display.nix
     ./hardware-configuration.nix
     ./locale.nix
+    ./networking.nix
     ./nixpkgs.nix
+    ./peripherals.nix
     ./power.nix
-
-    ../../modules/nixos/alacritty.nix
+    ../../modules/applications/alacritty.nix
+    ../../modules/applications/steam.nix
     ../../modules/nixos/audio.nix
     ../../modules/nixos/graphical/picom.nix
     ../../modules/nixos/graphical/rofi.nix
     ../../modules/nixos/graphical/xmonad-session.nix
     ../../modules/nixos/greet.nix
-    ../../modules/nixos/steam.nix
     ../../modules/nixos/users.nix
   ];
+
+  age.identityPaths = [
+    "/etc/ssh/ssh_host_ed25519_key"
+  ];
+
+  age.secrets = {
+    "key_wg0".file = ./secrets/key_wg0.age;
+  };
 
   environment.systemPackages = [
     pkgs.custom-slack
@@ -45,30 +52,8 @@
     monaspace
   ] ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues nerd-fonts);
 
-  hardware.graphics.enable = true;
-
-  hardware.intel-gpu-tools.enable = true;
-
-  hardware.nvidia.modesetting.enable = true;
-  hardware.nvidia.nvidiaSettings = true;
-  hardware.nvidia.open = true;
-  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
-  hardware.nvidia.powerManagement.enable = true;
-  hardware.nvidia.powerManagement.finegrained = false;
-  hardware.nvidia.prime = {
-    intelBusId = "PCI:00:02:0";
-    nvidiaBusId = "PCI:02:00:0";
-  };
-
   home-manager.useGlobalPkgs = true;
-
-  home-manager.users."xand" = {
-    imports = [
-      ./xand.nix
-    ];
-  };
-
-  networking.networkmanager.enable = true;
+  home-manager.users."xand" = import ./xand.nix;
 
   origami.audio.enable = true;
   origami.greet.enable = true;
@@ -93,12 +78,13 @@
 
   security.polkit.enable = true;
 
-  security.sudo.enable = true;
-  security.sudo.execWheelOnly = true;
-  security.sudo.wheelNeedsPassword = false;
+  security.sudo = {
+    enable = true;
+    execWheelOnly = true;
+    wheelNeedsPassword = false;
+  };
 
   services.dbus.enable = true;
-  services.xserver.verbose = 7;
 
   # See https://nixos.org/nixos/options.html.
   system.stateVersion = "20.09";

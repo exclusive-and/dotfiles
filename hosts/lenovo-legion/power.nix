@@ -1,7 +1,6 @@
 { config, lib, pkgs, ... }:
 
 let
-
   applySuspendBugfixTo =
     services:
     lib.genAttrs services (
@@ -11,7 +10,6 @@ let
         };
       }
     );
-
 in
 {
   environment.systemPackages = [
@@ -27,26 +25,30 @@ in
   services.acpid.enable = true;
 
   # CPU power: automated frequency tuning.
-  services.auto-cpufreq.enable = true;
-  services.auto-cpufreq.settings = {
-    charger = {
-      governor = "powersave";
-      energy_performance_preference = "balance_performance";
-    };
-    battery = {
-      governor = "powersave";
-      energy_performance_preference = "power";
+  services.auto-cpufreq = {
+    enable = true;
+    settings = {
+      charger = {
+        governor = "powersave";
+        energy_performance_preference = "balance_performance";
+      };
+      battery = {
+        governor = "powersave";
+        energy_performance_preference = "power";
+      };
     };
   };
 
   # CPU power: automated thermal management. Override the stock package
   # from nixpkgs to fix 'failed to read odvpXXXX' bug.
-  services.thermald.package = pkgs.thermald.overrideAttrs {
-    src = pkgs.fetchFromGitHub {
-      owner = "RevySR";
-      repo = "thermal_daemon";
-      rev = "836648db1f23144d35618a781624fe77dde48b03";
-      hash = "sha256-4k/MbUE/zyE5S3T3EKOQWq5xjTbQ4+pHK6+wfP1lqmc=";
+  services.thermald = {
+    package = pkgs.thermald.overrideAttrs {
+      src = pkgs.fetchFromGitHub {
+        owner = "RevySR";
+        repo = "thermal_daemon";
+        rev = "836648db1f23144d35618a781624fe77dde48b03";
+        hash = "sha256-4k/MbUE/zyE5S3T3EKOQWq5xjTbQ4+pHK6+wfP1lqmc=";
+      };
     };
   };
 

@@ -10,41 +10,45 @@
     pkgs.wget
   ];
 
-  environment.variables.NIX_REMOTE = "daemon";
+  environment.variables = {
+    NIX_REMOTE = "daemon";
+  };
 
-  nix.gc.automatic = true;
-  nix.gc.dates = "weekly";
-  nix.gc.options = "--delete-older-than 7d";
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 7d";
+  };
 
   nix.monitored.enable = true;
 
-  nix.settings.auto-optimise-store = true;
-  nix.settings.experimental-features = [
-    "flakes"
-    "nix-command"
-  ];
+  nix.settings = {
+    auto-optimise-store = true;
+    experimental-features = [
+      "flakes"
+      "nix-command"
+    ];
+    trusted-users = [
+      "root"
+      "xand"
+      "@wheel"
+    ];
+    warn-dirty = false;
+  };
 
-  nix.settings.trusted-users = [
-    "root"
-    "xand"
-    "@wheel"
-  ];
-
-  nix.settings.warn-dirty = false;
-
-  nixpkgs.config.allowUnfree = true;
-  nixpkgs.config.input-fonts.acceptLicense = true;
-
-  nixpkgs.config.permittedInsecurePackages = [
-    "electron-39.8.10"
-  ];
+  nixpkgs.config = {
+    allowUnfree = true;
+    input-fonts.acceptLicense = true;
+    permittedInsecurePackages = [
+      "electron-39.8.10"
+    ];
+  };
   
   nixpkgs.overlays = [
     (final: prev: {
       #openblas = prev.openblas.overrideAttrs {
       #  doCheck = false;
       #};
-
       custom-slack = prev.callPackage ../../pkgs/slack/slack.nix {};
       custom-vimrc = prev.callPackage ../../pkgs/vim/vimrc.nix {};
     })
