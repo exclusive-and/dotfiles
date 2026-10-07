@@ -24,16 +24,13 @@
 }@args:
 
 let
-
   buildNixosPackages = import ./make-package-set.nix {
     inherit inputs;
     inherit lib;
     inherit nixosSystem;
   };
 
-  #
   # Build a single target NixOS configuration.
-  #
   buildNixosTarget =
     target:
     let
@@ -52,7 +49,6 @@ let
           (lib.removeAttrs args argsToStrip);
     in
       f (finalArgs // { inherit buildNixosPackages; });
-
 in
   lib.foldl'
     lib.recursiveUpdate

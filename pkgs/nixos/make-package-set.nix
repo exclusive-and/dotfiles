@@ -8,21 +8,18 @@ in
 , nixosSystem
 }:
 
-lib.fix (
-  final:
-  {
-    inherit lib;
+lib.fix (final: {
+  inherit lib;
 
-    inherit (inputs)
-      home-manager
-      nix-auth
-      nix-monitored
-      nixos-hardware
-      nurpkgs
-      ragenix;
-    
-    inherit nixosSystem;
+  inherit (inputs)
+    home-manager
+    nix-auth
+    nix-monitored
+    nixos-hardware
+    nurpkgs
+    ragenix;
+  
+  inherit nixosSystem;
 
-    callNixosConfiguration = lib.callPackageWith final;
-  }
-)
+  callNixosConfiguration = lib.callPackageWith final;
+})

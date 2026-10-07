@@ -24,7 +24,7 @@ set expandtab
 set backspace=indent,eol,start
 
 " Set up Challenger Deep colourscheme.
-colorscheme challenger_deep
+" colorscheme challenger_deep
 
 " Setup haskell-vim.
 let g:haskell_enable_quantification = 1   " to enable highlighting of `forall`

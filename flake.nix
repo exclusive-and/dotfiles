@@ -1,9 +1,8 @@
 {
   inputs = {
-    nixpkgs.url = "nixpkgs/nixos-26.05";
-
-    nix-auth = {
-      url = "github:numtide/nix-auth";
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.home-manager.follows = "home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -12,66 +11,69 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    agenix = {
-      url = "github:ryantm/agenix";
-      inputs = {
-        home-manager.follows = "home-manager";
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
-
-    # Pull ragenix to safely encrypt any secrets in our configurations.
-    ragenix = {
-      url = "github:yaxitech/ragenix";
-      inputs = {
-        agenix.follows = "agenix";
-        nixpkgs.follows = "nixpkgs";
-      };
-    };
-
-    # Pull NUR for some overlays. Currently only used for rycee's firefox-addons.
-    nurpkgs = {
-      url = "github:nix-community/NUR";
+    nix-auth = {
+      url = "github:numtide/nix-auth";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    nix-monitored.url = "github:ners/nix-monitored";
 
     nixos-hardware = {
       url = "github:nixos/nixos-hardware";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    # Grab the nixpkgs-unstable branch in case we need more up-to-date versions of packages
-    # that haven't been incorporated into a stable release yet.
+    nixpkgs.url = "nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "nixpkgs/nixpkgs-unstable";
 
-    nix-monitored.url = "github:ners/nix-monitored";
+    nurpkgs = {
+      url = "github:nix-community/NUR";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    ragenix = {
+      url = "github:yaxitech/ragenix";
+      inputs.agenix.follows = "agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs: import ./pkgs/nixos/build-os.nix {
-    inherit inputs;
-    inherit (inputs.nixpkgs) lib;
+  outputs =
+  {
+    agenix
+  , home-manager
+  , nix-auth
+  , nix-monitored
+  , nixos-hardware
+  , nixpkgs
+  , nixpkgs-unstable
+  , nurpkgs
+  , ragenix
+  , self
+  }@inputs:
+  let
     inherit (inputs.nixpkgs.lib) nixosSystem;
+  in
+  {
+    nixosConfigurations.hyperion = nixosSystem {
+      modules = [
+        home-manager.nixosModules.default
+        {
+          nixpkgs.overlays = [
+            (final: prev: {
+              nix-auth = nix-auth.packages.${final.stdenv.hostPlatform.system}.default;
+            })
+            nurpkgs.overlays.default
+          ];
+        }
+        nix-monitored.nixosModules.default
+        nixos-hardware.nixosModules.common-cpu-amd
+        nixos-hardware.nixosModules.common-cpu-amd-pstate
+        nixos-hardware.nixosModules.common-gpu-nvidia-nonprime
+        ragenix.nixosModules.default
 
-    targets = [
-      ./hosts/hyperion
-      # ./hosts/lemur-pro
-      ./hosts/lenovo-legion
-    ];
-
-    #
-    # Cryptographic key pairs for encrypting and decrypting secrets.
-    #
-    # keys = {
-    #  public = import ./secrets/keys/public.nix;
-
-    #  /* DO NOT PUBLISH PRIVATE KEYS! */
-    #  private = [
-    #    "/root/.ssh/id_ed25519_hyperion_secrets"
-    #    # "/root/.ssh/id_ed25519_lemurpro_secrets"
-    #    # "/root/.ssh/id_ed25519_servarica_secrets"
-    #  ];
-    #};
-
-    #secrets = ./secrets;
+        ./hosts/hyperion/configuration.nix
+      ];
+    };
   };
 }

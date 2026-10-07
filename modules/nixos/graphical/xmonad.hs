@@ -18,6 +18,7 @@ import Data.Map qualified as Map
 import System.Exit
 
 import XMonad
+import XMonad.Actions.WithAll qualified
 import XMonad.Hooks.EwmhDesktops
   ( ewmh
   , ewmhFullscreen
@@ -36,6 +37,7 @@ import XMonad.Layout.Tabbed qualified
 import XMonad.Operations
   ( kill
   , refresh
+  , restart
   , sendMessage
   , setLayout
   , windows
@@ -47,15 +49,26 @@ import XMonad.Util.SpawnOnce (spawnOnce)
 main :: IO ()
 main =
   let
-    layout =
-          XMonad.Layout.Full
-      ||| XMonad.Layout.Tall 1 (3 / 100) (5 / 8)
-
-    modifiers =
-        avoidStruts
-      . lessBorders OnlyScreenFloat
-      . gaps [(L, 5), (R, 5), (U, 10), (D, 10)]
-      . smartSpacing 2
+    narrowLayout =
+      lessBorders OnlyScreenFloat
+      $ gaps [(L, 630), (R, 630), (U, 10), (D, 10)]
+      $ smartSpacing 2
+      $ avoidStruts
+      $ XMonad.Layout.Full
+    
+    fullLayout =
+      lessBorders OnlyScreenFloat
+      $ gaps [(L, 10), (R, 10), (U, 10), (D, 10)]
+      $ smartSpacing 2
+      $ avoidStruts
+      $ XMonad.Layout.Full
+    
+    tallLayout =
+      lessBorders OnlyScreenFloat
+      $ gaps [(L, 5), (R, 5), (U, 10), (D, 10)]
+      $ smartSpacing 2
+      $ avoidStruts
+      $ XMonad.Layout.Tall 1 (3 / 100) (5 / 8)
   in
     xmonad $ ewmhFullscreen $ ewmh $ def
       { XMonad.startupHook = Main.startupHook
@@ -67,7 +80,7 @@ main =
       , XMonad.focusedBorderColor = "#e03f3f"
       , XMonad.normalBorderColor  = "#44b88d"
       , XMonad.borderWidth = 2
-      , XMonad.layoutHook = modifiers layout
+      , XMonad.layoutHook = narrowLayout ||| fullLayout ||| tallLayout
         -- Mouse behaviour.
       , XMonad.clickJustFocuses = True
       , XMonad.focusFollowsMouse = True
@@ -76,7 +89,7 @@ main =
 startupHook :: X ()
 startupHook = do
   spawn "xsetroot -cursor_name left_ptr"
-  spawnOnce "feh --bg-scale $HOME/wallpapers/mirrors-edge.png"
+  spawnOnce "feh --bg-scale $HOME/.wallpapers/zen.png"
 
 keys :: XConfig Layout -> Map (ButtonMask, KeySym) (X ())
 keys XConfig{modMask, layoutHook, terminal, workspaces} =
@@ -92,6 +105,7 @@ keys XConfig{modMask, layoutHook, terminal, workspaces} =
       , ((modMask, xK_Tab), spawn appList)
       , ((modMask, xK_grave), spawn terminal)
       , ((modMask .|. shiftMask, xK_c), kill)
+      , ((modMask, xK_q), spawn "xmonad --restart")
       , ((modMask .|. shiftMask, xK_Escape), XMonad.io exitSuccess)
       ]
     

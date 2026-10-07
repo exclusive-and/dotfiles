@@ -19,9 +19,30 @@
     ];
   };
 
-  services.ddclient = {
+  networking.hostName = "hyperion";
+  networking.nameservers = [ "1.1.1.1" "4.4.4.4" "192.168.2.1" ];
+
+  environment.systemPackages = [
+    pkgs.wireguard-tools
+  ];
+
+  networking.wireguard = {
     enable = true;
-    configFile = "/etc/ddclient/ddclient.conf";
+    interfaces."wg0" = {
+      ips = ["10.0.0.17/32" "fd00:c7::11/128"];
+      listenPort = 51280;
+      peers = [
+        {
+          allowedIPs = ["10.0.0.0/24" "fd00:c7::/64"];
+          name = "rica-nixos";
+          publicKey = "5Tx4KvYAqObXgIdOERMsZz5OTIFRaOkUiB3NVgXN4ks=";
+          endpoint = "38.49.217.58:51820";
+          persistentKeepalive = 20;
+          dynamicEndpointRefreshSeconds = 20;
+        }
+      ];
+      privateKeyFile = config.age.secrets."wireguard.privatekey".path;
+    };
   };
 
   programs.ssh.startAgent = true;
@@ -49,20 +70,10 @@
     settings.PasswordAuthentication = false;
   };
 
-  networking.hostName = "hyperion";
-  
-  networking.nameservers = [
-    "1.1.1.1"
-    "4.4.4.4"
-    "192.168.2.1"
-  ];
-
   networking.networkmanager = {
     enable = true;
     unmanaged = [ "wg0" ];
   };
 
-  users.extraGroups = {
-    "networkmanager".members = [ "xand" ];
-  };
+  users.extraGroups."networkmanager".members = [ "xand" ];
 }

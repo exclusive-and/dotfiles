@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.origami.rofi;
-  forEachUser = lib.genAttrs config.origami.xmonad.users;
+  forEachUser = lib.genAttrs config.origami.rofi.users;
 in
 {
   options.origami = {
@@ -28,6 +28,10 @@ in
         description = "The terminal Rofi will use to execute commands.";
         type = lib.types.str;
         default = "${pkgs.alacritty}/bin/alacritty";
+      };
+
+      users = lib.mkOption {
+        type = with lib.types; listOf str;
       };
     };
   };

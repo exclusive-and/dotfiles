@@ -54,6 +54,21 @@
   console.font = "Lat2-Terminus16";
   console.keyMap = "us";
 
-  # Kernel: computer hostname
-  networking.hostName = "hyperion";
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+    
+    extraLocaleSettings = {
+      LANG    = "en_CA.UTF-8";
+      LC_TIME = "C";
+    }; 
+
+    supportedLocales = [
+      "en_US.UTF-8/UTF-8"
+      "en_CA.UTF-8/UTF-8"
+    ];
+  };
+
+  services.xserver.xkb.layout = "us";
+
+  time.timeZone = "America/Montreal";
 }

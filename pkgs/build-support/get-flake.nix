@@ -109,7 +109,6 @@ let
       # NB git worktrees have a file for .git, so we don't check the type of .git
       isGit = builtins.pathExists (tree + "/.git");
       isShallow = builtins.pathExists (tree + "/.git/shallow");
-
     in
     {
       lastModified = 0;

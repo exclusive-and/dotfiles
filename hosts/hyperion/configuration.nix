@@ -2,17 +2,16 @@
 
 {
   imports = [
-    ./audio.nix
     ./boot.nix
-    ./display.nix
     ./hardware-configuration.nix
     ./locale.nix
-    ./network.nix
+    ./networking.nix
     ./nixpkgs.nix
-    ./wireguard.nix
+    ./peripherals.nix
 
     ../../modules/nixos/alacritty.nix
     ../../modules/nixos/audio.nix
+    ../../modules/nixos/graphical/niri-session.nix
     ../../modules/nixos/graphical/picom.nix
     ../../modules/nixos/graphical/rofi.nix
     ../../modules/nixos/graphical/xmonad-session.nix
@@ -27,11 +26,9 @@
     ../../webhosts/coraless
   ];
 
-  age.identityPaths = [
-    "/root/.ssh/id_ed25519_hyperion_secrets"
-  ];
-
-  age.secrets = (import ../../secrets { inherit lib; }).hyperion;
+  age.secrets = {
+    "wireguard.privatekey".file = ./wireguard.privatekey.age;
+  };
 
   environment.systemPackages = [
     pkgs.acpi
@@ -39,6 +36,7 @@
     pkgs.custom-slack
     pkgs.custom-vimrc
     pkgs.lshw
+    pkgs.nnn
     pkgs.ragenix
     pkgs.rsync
     pkgs.unzip
@@ -46,83 +44,125 @@
   ];
 
   environment.sessionVariables = {
-    LIBVA_DRIVER_NAME   = "nvidia";
-    GBM_BACKEND         = "nvidia-drm";
-    __GL_GSYNC_ALLOWED  = "1";
-    __GL_VRR_ALLOWED    = "1";
-    NVD_BACKEND         = "direct";
+    XDG_CONFIG_HOME = "$HOME/.config";
+    XDG_CACHE_HOME  = "$HOME/.cache";
+    XDG_DATA_HOME   = "$HOME/.local/share";
+    XDG_STATE_HOME  = "$HOME/.local/state";
   };
 
-  fonts.packages = with pkgs; [
-    hasklig
-    input-fonts
-    monaspace
-  ] ++ builtins.filter lib.attrsets.isDerivation (builtins.attrValues nerd-fonts);
+  fonts.packages = lib.foldl' (b: a: a ++ b) [] [
+    [
+      pkgs.hasklig
+      pkgs.input-fonts
+      pkgs.monaspace
+    ]
+    (builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts))
+  ];
 
   hardware.graphics.enable = true;
 
-  hardware.nvidia.modesetting.enable = false;
-  hardware.nvidia.nvidiaSettings = true;
-  hardware.nvidia.open = true;
-  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
-  hardware.nvidia.powerManagement.enable = false;
-  hardware.nvidia.powerManagement.finegrained = false;
-
   home-manager.useGlobalPkgs = true;
-#  home-manager.useUserPackages = true;
-
-  home-manager.users."xand" = {
-    imports = [
-      ./xand.nix
-    ];
+  home-manager.users = {
+    "xand" = import ./xand.nix;
+    "gaming" = import ./gaming.nix;
   };
-
-  home-manager.users."gaming" = {
-    imports = [
-      ./gaming.nix
-    ];
-  };
-
+  
   origami.audio.enable = true;
   origami.greet.enable = true;
   origami.rofi.enable = true;
+  origami.rofi.users = [ "xand" "gaming" ];
   origami.xmonad.enable = true;
-  origami.xmonad.users = ["xand"];
+  origami.niri.enable = true;
+  origami.niri.users = [ "xand" "gaming" ];
 
-  origami.users."xand".audio = true;
-  origami.users."xand".packages = [
-    pkgs.bitwarden-desktop
-    pkgs.coppwr
-    pkgs.pwvucontrol
-    pkgs.recordbox
-  ];
-  origami.users."xand".wheel = true;
-  origami.users."xand".xmonad.enable = true;
+  origami.users."xand" = {
+    audio = true;
+    packages = [
+      pkgs.bitwarden-desktop
+      pkgs.coppwr
+      pkgs.pwvucontrol
+      pkgs.recordbox
+    ];
+    wheel = true;
+    # xmonad.enable = true;
+  };
 
-  origami.users."gaming".audio = true;
-  origami.users."gaming".packages = [
-    pkgs.coppwr
-    pkgs.discord
-    pkgs.heroic
-    pkgs.opencomposite
-    pkgs.pwvucontrol
-    pkgs.recordbox
-  ];
-  origami.users."gaming".xmonad.enable = true;
+  origami.users."gaming" = {
+    audio = true;
+    packages = [
+      pkgs.coppwr
+      pkgs.discord
+      pkgs.heroic
+      pkgs.opencomposite
+      pkgs.pwvucontrol
+      pkgs.recordbox
+    ];
+    xmonad.enable = true;
+  };
 
   programs.dconf.enable = true;
-  programs.fish.enable = true;
+
+  programs.fish = {
+    enable = true;
+    interactiveShellInit = ''
+      set -g fish_cursor_default block
+      set -g fish_cursor_insert line
+      set -g fish_cursor_replace_one underscore
+      set -g fish_cursor_visual block
+      set -g fish_cursor_external block
+    '';
+  };
 
   security.polkit.enable = true;
 
-  security.sudo.enable = true;
-  security.sudo.execWheelOnly = true;
-  security.sudo.wheelNeedsPassword = false;
+  security.sudo = {
+    enable = true;
+    execWheelOnly = true;
+    wheelNeedsPassword = false;
+  };
 
   services.acpid.enable = true;
   services.dbus.enable = true;
-  services.xserver.verbose = 7;
-  services.xserver.videoDrivers = [ "nvidia" ];
+
+  users.users."xand" = {
+    extraGroups = [
+      "audio"
+      "docker"
+      "media"
+      "music"
+      "networkmanager"
+      "render"
+      "seat"
+      "video"
+    ];
+  };
+
+  users.users."gaming" = {
+    extraGroups = [
+      "audio"
+      "media"
+      "music"
+      "render"
+      "video"
+    ];
+  };
+
+  users.groups."media" = {};
+  users.groups."music" = {};
+
+  users.users."music" = {
+    enable = true;
+    group = "music";
+    extraGroups = [
+      "audio"
+      "media"
+      "music"
+    ];
+    isNormalUser = false;
+    isSystemUser = true;
+  };
+
+  virtualisation.docker.enable = true;
 
   # See https://nixos.org/nixos/options.html.
   system.stateVersion = "20.09";

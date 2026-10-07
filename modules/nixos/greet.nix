@@ -32,23 +32,7 @@ let
   inherit (config.networking) hostName;
   inherit (config.system.nixos) codeName distroName version;
 
-  # Create the user login script.
-  loginScript = pkgs.writeTextFile {
-    executable = true;
-    name = "login.sh";
-    text =
-      let
-        loginCmds = mapAttrsToList
-          (name: cmd: "'${name}') ${cmd};;")
-          cfg.logins;
-      in
-      ''
-        #!/bin/sh
-        case "''$(whoami)" in
-        ${concatStringsSep "\n" (nest 2 loginCmds)}
-        esac
-      '';
-  };
+  sessionPath = config.services.displayManager.sessionData.desktops;
 in
 {
   options.origami = {
@@ -76,66 +60,68 @@ in
         default = "border=black;container=red;greet=white;prompt=white;input=black;button=yellow;action=red";
       };
 
-      logins = lib.mkOption {
-        description = ''
-
-        '';
-        type = with lib.types; attrsOf path;
-      };
-
       greetCommand = lib.mkOption {
         readOnly = true;
         type = lib.types.str;
         default = ''
           ${pkgs.tuigreet}/bin/tuigreet \
-            --cmd /usr/shared/login.sh \
             --issue \
             --asterisks --asterisks-char "=" \
-            --theme '${cfg.theme}'
+            --theme '${cfg.theme}' \
+            --remember \
+            --remember-user-session \
+            --sessions "${sessionPath}/share/wayland-sessions" \
+            --xsessions "${sessionPath}/share/xsessions"
         '';
       };
 
-      initialUser = lib.mkOption {
-        description = "The initial session user.";
-        type = lib.types.str;
-        default = "xand";
+      autoLogin = lib.mkOption {
+        type = lib.types.submodule {
+          options.user = lib.mkOption {
+            type = lib.types.str;
+            default = "xand";
+          };
+
+          options.command = lib.mkOption {
+            type = lib.types.str; 
+            default = "startx ${config.origami.xmonad.xinitrc}";
+          };
+        };
       };
     };
   };
 
   config = lib.mkIf cfg.enable {
-
-    # Put the login script is in the system packages so that it gets linked to
-    # /usr/shared/login[..].sh
-    system.activationScripts = {
-      loginScript = {
-        deps = [];
-        text = ''
-          mkdir -p /usr/shared
-          ln -sfn ${loginScript} /usr/shared/login.sh
-        '';
-      };
-    };
-
-    services.greetd.enable = true;
-    services.seatd.enable = true;
-
-    services.greetd.settings = {
-      default_session = {
-        command = cfg.greetCommand;
-        user = "greeter";
-      };
-
-      # Auto-login session; happens once on initial startup.
-      initial_session = {
-        command = cfg.logins.${cfg.initialUser};
-        user = cfg.initialUser;
-      };
-    };
-
-    services.greetd.useTextGreeter = true;
-
     environment.etc."issue".text = cfg.message;
 
+    services.greetd = {
+      enable = true;
+      settings = {
+        default_session = {
+          command = cfg.greetCommand;
+          user = "greeter";
+        };
+        # Auto-login session; happens once on initial startup.
+        initial_session = {
+          command = "${cfg.autoLogin.command}";
+          user = "${cfg.autoLogin.user}";
+        };
+      };
+      useTextGreeter = true;
+    };
+
+    systemd.services.greetd = {
+      serviceConfig = {
+        Type = "idle";
+        StandardInput = "tty";
+        StandardOutput = lib.mkForce "null";
+        StandardError = "journal";
+        TTYReset = true;
+        TTYVHangup = true;
+        TTYVTDisallocate = true;
+      };
+    };
+
+    services.seatd.enable = true;
   };
 }

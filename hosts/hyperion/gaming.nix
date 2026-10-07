@@ -20,11 +20,6 @@
   home.username = "gaming";
   home.stateVersion = "24.11";
 
-  nixpkgs.config = {
-    allowUnfree = true;
-    input-fonts.acceptLicense = true;
-  };
-
   home.packages = with pkgs; [
     coppwr
     discord

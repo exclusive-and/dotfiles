@@ -16,7 +16,7 @@ common common-language
     TupleSections
     TypeApplications
 
-executable xmonad
+executable xmonadrc
   import: common-language
   main-is: xmonad.hs
   build-depends:

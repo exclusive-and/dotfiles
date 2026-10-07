@@ -69,5 +69,18 @@ in
       ];
       unredir-if-possible = true;
     };
+
+
+    systemd.user.services.picom = {
+      unitConfig = {
+        Requisite = "graphical-session.target";
+      };
+      serviceConfig = {
+        ExecCondition = ''
+          ${pkgs.bash}/bin/bash -c '[ -n $DISPLAY ]'
+        '';
+      };
+    };
+
   };
 }

@@ -14,7 +14,6 @@ let
   forEachUser = f: lib.mapAttrs f cfg.users;
 
   userOptions = {
-
     options.audio = lib.mkOption {
       type = lib.types.bool;
       default = false;
@@ -64,7 +63,6 @@ let
         Whether to add this user to the 'wheel' group.
       '';
     };
-    
   };
 
 in

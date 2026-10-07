@@ -1,11 +1,63 @@
 { config, lib, pkgs, ... }:
 
 let
-  
   cfg = config.origami.xmonad;
 
   forEachUser = lib.genAttrs cfg.users;
 
+  ghcWithPackages = cfg.haskellPackages.ghcWithPackages;
+
+  xmonadrc = ghcWithPackages (
+    haskellPackages: [
+      haskellPackages.xmonad
+      haskellPackages.xmonad-contrib
+      haskellPackages.xmonad-extras
+      (haskellPackages.callPackage ./xmonadrc.nix {})
+    ]
+  );
+
+  xmonad-command = pkgs.runCommand "xmonad"
+    {
+      preferLocalBuild = true;
+      nativeBuildInputs = [ pkgs.makeWrapper ];
+    }
+    ''
+      install -D ${xmonadrc}/share/man/man1/xmonad.1.gz $out/share/man/man1/xmonad.1.gz
+      makeWrapper ${xmonadrc}/bin/xmonadrc $out/bin/xmonad \
+        `# --set XMONAD_GHC "${xmonadrc}/bin/ghc"` \
+        --set XMONAD_XMESSAGE "${pkgs.xmessage}/bin/xmessage"
+    '';
+  
+  xmonad-session-script = pkgs.writeScript "xsession" ''
+    #! ${pkgs.bash}/bin/bash
+    systemd-cat -t xmonad -- ${xmonad-command}/bin/xmonad &
+    waitPID=$!
+    systemctl --user import-environment XDG_SESSION_TYPE DISPLAY XAUTHORITY
+    systemctl --user start picom
+    test -n "$waitPID" && wait "$waitPID"
+    systemctl --user stop graphical-session.target
+    exit 0
+  '';
+
+  xmonad-session-desktop = pkgs.writeTextFile {
+    name = "none+xmonad";
+    destination = "/share/xsessions/none+xmonad.desktop";
+    text = ''
+      [Desktop Entry]
+      Version=1.0
+      Name=none+xmonad
+      DesktopNames=none+xmonad
+      Type=XSession
+      Exec=${xmonad-session-script}
+      TryExec=${xmonad-session-script}
+    '';
+  };
+
+  xmonad-session-pkg = xmonad-session-desktop // {
+    providedSessions = [
+      "none+xmonad"
+    ];
+  };
 in
 {
   options.origami = {
@@ -17,10 +69,27 @@ in
         example = true;
       };
 
+      haskellPackages = lib.mkOption {
+        default = pkgs.haskellPackages;
+        type = lib.types.attrs;
+      };
+
       source = lib.mkOption {
         description = "The Haskell source file for XMonad to use.";
         type = lib.types.path;
         default = ./xmonad.hs;
+      };
+
+      xinitrc = lib.mkOption {
+        default = xmonad-session-script;
+        readOnly = true;
+        type = with lib.types; oneOf [ str path package ];
+      };
+
+      xsession = lib.mkOption {
+        default = xmonad-session-pkg;
+        readOnly = true;
+        type = with lib.types; oneOf [ str path package ];
       };
 
       users = lib.mkOption {
@@ -33,64 +102,17 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-
-    # Make startx the login command for all XMonad users.
-    origami.greet.logins =
-      forEachUser
-      (_: "${pkgs.xinit}/bin/startx");
-
     environment.systemPackages = [
-      pkgs.xinit # X server initialization (xinit, startx)
+      pkgs.feh
+      xmonad-command
     ];
 
-    services.xserver = {
-      enable = true;
-      displayManager.startx.enable = true;
+    services = {
+      displayManager.enable = true;
+      displayManager.sessionPackages = [ xmonad-session-pkg ];
+
+      xserver.enable = true;
+      xserver.displayManager.startx.enable = true;
     };
-
-    home-manager.users = forEachUser (user: {
-      # Manage this user's X session.
-      xsession.enable = true;
-
-      # Tell home-manager to put the user's X session script in ~/.xinitrc
-      # so that startx is happy.
-      xsession.scriptPath = ".xinitrc";
-
-      xsession.windowManager.xmonad = {
-        # Make XMonad the window manager for this session.
-        enable = true;
-        config = cfg.source;
-
-        extraPackages =
-          haskellPackages:
-          let
-            xmonadrc = haskellPackages.callPackage ./xmonadrc.nix {};
-          in
-          [
-            haskellPackages.containers
-            haskellPackages.data-default
-            haskellPackages.xmonad-contrib
-            haskellPackages.xmonad-extras
-            xmonadrc
-          ];
-      };
-
-      home.sessionVariables = {
-        DISPLAY = ":0";
-      };
-
-      home.packages = with pkgs; [
-        feh
-        pywal
-        xdotool
-      ];
-
-      xsession.initExtra = ''
-        set +x
-        ${pkgs.util-linux}/bin/setterm -blank 0 -powersave off -powerdown 0
-        ${pkgs.xset}/bin/xset s off
-      '';
-    });
-
   };
 }
