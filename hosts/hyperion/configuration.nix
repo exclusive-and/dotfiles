@@ -53,8 +53,6 @@
     (builtins.filter lib.attrsets.isDerivation (builtins.attrValues pkgs.nerd-fonts))
   ];
 
-  hardware.graphics.enable = true;
-
   home-manager.useGlobalPkgs = true;
   home-manager.users = {
     "xand" = import ./xand.nix;
