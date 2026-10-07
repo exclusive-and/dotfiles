@@ -68,6 +68,7 @@
         ragenix.nixosModules.default
         ./hosts/rica/configuration.nix
       ];
+      system = "x86_64-linux";
     };
     
     nixosConfigurations.hyperion = nixosSystem {
