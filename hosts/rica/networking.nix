@@ -1,6 +1,12 @@
 { config, lib, pkgs, ... }:
 
 {
+  networking.firewall = {
+    allowedUDPPorts = [
+      51820 # wireguard VPN connection port on wg0
+    ];
+  };
+
   environment.systemPackages = [
     pkgs.wireguard-tools
   ];
