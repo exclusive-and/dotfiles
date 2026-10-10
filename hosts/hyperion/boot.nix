@@ -15,6 +15,9 @@
   boot.initrd = {
     availableKernelModules = [
       "nvme"
+      "hid_generic"
+      "usbhid"
+      "xhci_hcd"
       "xhci_pci"
     ];
     compressor = "zstd";
@@ -25,6 +28,10 @@
     enable = true;
     systemd.enable = true;
     systemd.dbus.enable = false;
+  };
+
+  boot.initrd.luks.devices = {
+    "luks-rpool-nvme0n1p3".device = "/dev/nvme0n1p3";
   };
 
   # Kernel
@@ -48,6 +55,9 @@
   boot.kernel.sysctl = {
     "vm.max_map_count" = 2147483642;
   };
+
+  boot.supportedFilesystems = [ "zfs" ];
+  boot.zfs.forceImportRoot = false;
 
   # Kernel: initial console setup
   console.enable = true;

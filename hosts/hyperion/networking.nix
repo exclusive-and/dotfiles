@@ -19,6 +19,7 @@
     ];
   };
 
+  networking.hostId = "e69576b3";
   networking.hostName = "hyperion";
   networking.nameservers = [ "1.1.1.1" "4.4.4.4" "192.168.2.1" ];
 
